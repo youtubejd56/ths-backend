@@ -6,6 +6,9 @@ def validate_file_type(value):
     if not value:
         return
     
+    if value.size > 10 * 1024 * 1024:
+        raise ValidationError('File size too large. Maximum size is 10MB.')
+
     # Get the content type from the file object
     content_type = getattr(value, 'content_type', None)
     
