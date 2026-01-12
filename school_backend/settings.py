@@ -13,7 +13,7 @@ load_dotenv(BASE_DIR / ".env")
 # Security
 # -------------------------------------------------
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "insecure-dev-key")
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("1", "true", "yes")
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in ("1", "true", "yes")
 
 # ALLOWED_HOSTS = (
 #     [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
@@ -39,12 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "cloudinary_storage",
     "django.contrib.staticfiles",
 
     # Third-party
     "rest_framework",
     "rest_framework_simplejwt",
-    "cloudinary_storage",
     "cloudinary",
     "corsheaders",
 
@@ -136,6 +136,7 @@ else:
             default=os.getenv("DATABASE_URL"),
             conn_max_age=600,
             conn_health_checks=True,
+            ssl_require=True,
         )
     }
 
@@ -214,15 +215,32 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+    },
     "handlers": {
-        "console": {"class": "logging.StreamHandler"},
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
     },
     "root": {
         "handlers": ["console"],
         "level": "INFO",
     },
     "loggers": {
-        "django.request": {"handlers": ["console"], "level": "INFO", "propagate": False},
-        "rest_framework": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
     },
 }

@@ -25,5 +25,5 @@ ENV PYTHONPATH=/app
 
 EXPOSE 8000
 
-CMD gunicorn school_backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+CMD python manage.py migrate && gunicorn school_backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
 # ...existing code...
