@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from cloudinary_storage.storage import VideoMediaCloudinaryStorage
 
 def validate_file_type(value):
     if not value:
@@ -101,7 +102,11 @@ class Attendance(models.Model):
 class Shorts(models.Model):
     title = models.CharField(max_length=255)
     caption = models.TextField()
-    video = models.FileField(upload_to='shorts/')
+    video = models.FileField(
+        upload_to='shorts/',
+        validators=[validate_file_type],
+        storage=VideoMediaCloudinaryStorage()
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

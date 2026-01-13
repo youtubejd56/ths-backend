@@ -15,7 +15,7 @@ from datetime import date, timedelta
 import calendar
 import random
 
-from .models import Attendance, StudentMark, EventPost, Admission, Shorts, SupportMessage
+from .models import Attendance, StudentMark, EventPost, Admission, Shorts, SupportMessage, EmailOTP
 from .serializers import (
     AttendanceSerializer,
     StudentMarkSerializer,
