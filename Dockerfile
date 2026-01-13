@@ -28,5 +28,5 @@ EXPOSE 8000
 # Run collectstatic during build. Use a dummy secret key.
 RUN DJANGO_SECRET_KEY=dummy-key-for-collectstatic python manage.py collectstatic --noinput || true
 
-CMD python manage.py migrate && gunicorn school_backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+CMD python create_admin.py && python manage.py migrate && gunicorn school_backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
 # ...existing code...
