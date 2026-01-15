@@ -282,9 +282,35 @@ def admin_forgot_password(request):
 
 
 # -------------------- Shorts Video --------------------
+
 class ShortsViewSet(viewsets.ModelViewSet):
-    queryset = Shorts.objects.all()
+    queryset = Shorts.objects.all().order_by('-created_at')
     serializer_class = ShortsSerializer
+
+    def get_week_range(self):
+        now = timezone.now()
+        start_of_week = now - timedelta(days=now.weekday())
+        start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_week = start_of_week + timedelta(days=7)
+        return start_of_week, end_of_week
+
+    def create(self, request, *args, **kwargs):
+        start, end = self.get_week_range()
+
+        # Count uploaded shorts in this week
+        weekly_count = Shorts.objects.filter(created_at__range=(start, end)).count()
+
+        if weekly_count >= 2:
+            return Response(
+                {"error": "Weekly limit reached. Please wait for next week."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # -------------------- Attendance ViewSet --------------------

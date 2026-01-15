@@ -30,3 +30,8 @@ class SupportMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupportMessage
         fields = '__all__'
+
+class ShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Short
+        fields = "__all__"
