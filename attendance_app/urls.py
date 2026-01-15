@@ -1,5 +1,4 @@
 from django.urls import path, include
-from .views import ShortCreateView
 from rest_framework.routers import DefaultRouter
 from .views import (
     admin_forgot_password, AttendanceViewSet, ShortsViewSet,
@@ -46,9 +45,6 @@ urlpatterns = [
 
     # AI Chat
     path("ai-chat/", ai_chat, name="ai-chat"),
-
-    # Shorts
-    path("shorts/", ShortCreateView.as_view(), name="short_create"),
 
     # Include routers for viewsets
     path("", include(router.urls)),
