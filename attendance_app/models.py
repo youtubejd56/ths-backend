@@ -99,11 +99,14 @@ class Attendance(models.Model):
         return f"{self.year} - {self.division} - {self.roll_number} - {self.student_name}"
 
 # -------------------- Shorts --------------------
-class Short(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+class Shorts(models.Model):
+    title = models.CharField(max_length=255)
     caption = models.TextField()
-    video = models.FileField(upload_to="shorts/")
+    video = models.FileField(
+        upload_to='shorts/',
+        validators=[validate_file_type],
+        storage=VideoMediaCloudinaryStorage()
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
