@@ -458,6 +458,33 @@ def reset_password(request):
 
     return JsonResponse({"message": "Password reset successful"})
 
+# -------------------- User Weekly API View --------------------
 
-    # -------------------- admin event posts Delete --------------------    
+class UserWeeklyAPIView(APIView):
+    permission_classes = [AllowAny]  # Anyone can access
+
+    def get(self, request, *args, **kwargs):
+        """
+        Returns how many shorts a user has posted this week
+        """
+        # current week start (Monday)
+        today = timezone.now()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=7)
+
+        # Count videos uploaded this week
+        videos_this_week = ShortVideo.objects.filter(
+            created_at__gte=start_of_week,
+            created_at__lt=end_of_week
+        ).count()
+
+        # Max 2 per week
+        can_upload = videos_this_week < 2
+
+        data = {
+            "uploaded_this_week": videos_this_week,
+            "can_upload": can_upload
+        }
+
+        return Response(data)   
 
